@@ -1,0 +1,206 @@
+/* --------------------------------------------------------------------------
+ * [ PROJECT   ]
+ * [ License   ]  SAMJIN ELECTRONICS.,Co.Ltd
+ * [ Author    ]  Copyright 2023 By HAG-SEONG KANG
+ * [ E-MAIL    ]  hl5ugc@nate.com (82)10- 3841-9706
+ * [ C  P  U   ]
+ * [ Compller  ]
+ * [ Filename  ]  uart.c
+ * [ Version   ]  1.0
+ * [ Created   ]
+ * --------------------------------------------------------------------------
+ * Revision History :
+ * ------------------------------------------------------------------
+ *
+ *  *.본소스 코드를 이용하는 것은 본 조항을 사용자가 암묵적으로
+ *    동의 한것으로 간주 합니다.
+ *  *.본 소스코드는 개인학습 및 연구 개발용으로 자유롭게 사용가능
+ *    합니다.
+ *  *.본소스를 사용하여 2차 저작을 하거나 재배포 할 시에는 반드시
+ *    SAMJIN ELECTRONICS의 회사명을 반드시 명시하여야 합니다.
+ *  *.본 소스코드의 판매 및 영리 활동을 금지합니다 .
+ *  *.본 조항 및 원저자 표시의 수정 및 삭제를 금지합니다.
+ *
+ *------------------------------------------------------------------
+ * --------------------------------------------------------------------------
+ * Author         Date       Comments on this revision
+ * --------------------------------------------------------------------------
+ * Hagseong Kang  Apr 20, 2023    First release of this file
+ * --------------------------------------------------------------------------
+ * Additional Notes:
+ * **************************************************************************
+ */
+/**
+* @brief
+* @param
+* @return
+*/
+
+/* Includes */
+#include "qbuffer.h"
+
+// ---------------------------------------------------------------------------
+// Define Global define
+// ---------------------------------------------------------------------------
+//
+
+//
+// ---------------------------------------------------------------------------
+// Define typedef
+// ---------------------------------------------------------------------------
+//
+// ---------------------------------------------------------------------------
+//  Define Private variables.
+// ---------------------------------------------------------------------------
+//
+
+// ---------------------------------------------------------------------------
+//  Macro Define .
+// ---------------------------------------------------------------------------
+
+
+// ---------------------------------------------------------------------------
+// Define Private function prototype.
+// ---------------------------------------------------------------------------
+//
+
+// ---------------------------------------------------------------------------
+// Define  Global Function prototypes.
+// ---------------------------------------------------------------------------
+//
+void qbufferInit(void)
+{
+
+}
+
+bool qbufferCreate(qUartBuff_t *p_node, uint8_t *p_buf, uint8_t length)
+{
+  bool result = true;
+
+  p_node->in    = 0;
+  p_node->out   = 0;
+  p_node->len   = length;
+  p_node->p_buf = p_buf;
+
+  return result;
+}
+
+bool qbufferWrite(qUartBuff_t *p_node, const uint8_t *p_data, uint8_t length)
+{
+  bool result = true;
+  uint8_t i ;
+  uint8_t next_in;
+
+
+  for (i=0; i<length; i++)
+  {
+    next_in = (p_node->in + 1) % p_node->len;
+
+    if (next_in != p_node->out)
+    {
+      if (p_node->p_buf != NULL)
+      {
+        p_node->p_buf[p_node->in] = p_data[i];
+      }
+      p_node->in = next_in;
+    }
+    else
+    {
+      result = false;
+      break;
+    }
+  }
+
+  return result;
+}
+
+bool qbufferRead(qUartBuff_t *p_node, uint8_t *p_data, uint8_t length)
+{
+  bool result = false;
+  uint8_t i ;
+
+  if (p_node->p_buf != NULL)
+  {
+    for (i=0; i<length; i++)
+    {
+      p_data[i] = p_node->p_buf[p_node->out];
+      if (p_node->out != p_node->in)
+      {
+        p_node->out = (p_node->out + 1) % p_node->len;
+        result = true ;
+      }
+      else
+      {
+        result = false;
+        break;
+      }
+    }
+  }
+
+  return result;
+}
+
+bool qbufferReadByte(qUartBuff_t *p_node, uint8_t *p_data)
+{
+  bool bResult = false ;
+
+
+  if (p_node->p_buf != NULL)    // Check Created Buff
+  {
+     *p_data = p_node->p_buf[p_node->out];
+
+      if(p_node->out != p_node->in)
+      {
+        p_node->out = (p_node->out + 1) % p_node->len;
+         bResult = true ;
+      }
+  }
+
+  return result;
+}
+uint8_t qbufferRxAvailable(qUartBuff_t *p_node)
+{
+  uint8_t result;
+
+
+  result = (p_node->in - p_node->out) % p_node->len;
+
+  return result;
+}
+
+uint8_t qbufferTxAvailable(qUartBuff_t *p_node)
+{
+  uint8_t result;
+  result = (p_node->in - p_node->out) % p_node->len;
+  result = p_node->len - result ;
+
+  return result;
+}
+
+bool qbufferTxEmpty(qUartBuff_t *p_node)
+{
+  bool bResult = false ;
+
+  if(p_node->in ==   p_node->out)
+  {
+    bResult = true ;
+  }
+  //
+  return bResult ;
+}
+void qbufferFlush(qUartBuff_t *p_node)
+{
+  p_node->in  = 0;
+  p_node->out = 0;
+}
+// ---------------------------------------------------------------------------
+// Define private function definitions.
+// ---------------------------------------------------------------------------
+//
+
+// ---------------------------------------------------------------------------
+//  Define Callbacks definitions.
+// ---------------------------------------------------------------------------
+//
+
+ /* src/common/hw/include/uart.h End Of File !! Well Done */

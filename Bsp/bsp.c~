@@ -1,0 +1,21 @@
+
+#include "bsp.h"
+
+
+
+
+void bspInit(void)
+{
+
+}
+
+void delay(uint16_t ms)
+{
+
+}
+
+uint16_t millis(void)
+{
+
+  return 0 ;
+}

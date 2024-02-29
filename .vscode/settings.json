@@ -1,0 +1,10 @@
+{
+  "files.associations": {
+    "dataconvert.h": "c",
+    "qbuffer.h": "c",
+    "uart.h": "c",
+    "hw_def.h": "c",
+    "def.h": "c"
+  },
+  "editor.fontSize": 20
+}

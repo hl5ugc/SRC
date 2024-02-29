@@ -1,0 +1,56 @@
+/*
+ * qbuffer.h
+ *
+ *
+ *
+ */
+
+#ifndef SRC_COMMON_HW_INCLUDE_QBUFFER_H_
+#define SRC_COMMON_HW_INCLUDE_QBUFFER_H_
+
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+
+#include "def.h"
+
+
+// ---------------------------------------------------------------------------
+// Define Global define
+// ---------------------------------------------------------------------------
+//
+
+// ---------------------------------------------------------------------------
+// Define typedef
+// ---------------------------------------------------------------------------
+//
+typedef struct
+{
+  uint8_t in;
+  uint8_t out;
+  uint8_t len;
+
+  uint8_t *p_buf;
+} qUartBuff_t;
+
+// ---------------------------------------------------------------------------
+// Define  Global Function prototypes.
+// ---------------------------------------------------------------------------
+//
+void     qbufferInit(void);
+bool     qbufferCreate(qUartBuff_t *p_node, uint8_t *p_buf, uint8_t length);
+bool     qbufferWrite(qUartBuff_t *p_node,const uint8_t *p_data, uint8_t length);
+bool     qbufferRead(qUartBuff_t *p_node,  uint8_t *p_data, uint8_t length);
+bool     qbufferReadByte(qUartBuff_t *p_node, uint8_t *p_data);
+uint8_t  qbufferRxAvailable(qUartBuff_t *p_node);
+uint8_t  qbufferTxAvailable(qUartBuff_t *p_node);
+bool     qbufferEmpty(qUartBuff_t *p_node);
+void     qbufferFlush(qUartBuff_t *p_node);
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif /* SRC_COMMON_HW_INCLUDE_QBUFFER_H_ */

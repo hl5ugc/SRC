@@ -7,7 +7,7 @@
  * [ Compller  ]
  * [ Filename  ]  ADC.c
  * [ Version   ]  1.0
- * [ Created   ]
+ * [ Created   ]  2024-06-10 
  * --------------------------------------------------------------------------
  * Revision History :
  * ------------------------------------------------------------------
@@ -27,7 +27,7 @@
  * --------------------------------------------------------------------------
  * Author         Date       Comments on this revision
  * --------------------------------------------------------------------------
- * Hagseong Kang  Jul 14, 2023    First release of this file
+ * Hagseong Kang  2024-06-10    First release of this file
  * --------------------------------------------------------------------------
  * Additional Notes:
  * **************************************************************************
@@ -38,19 +38,17 @@
  * @return
  */
 
-#pragma used-
+#pragma used+
 /* Define Includes */
 #include "ADC.h"
  
-#include "cli.h"
-#include "uart.h"
 // ---------------------------------------------------------------------------
 //  Define Macros .
 // ---------------------------------------------------------------------------
 //
 #define FIRST_ADC_INPUT     0
 #define LAST_ADC_INPUT      (MAX_ADC_CH -1U) 
-#define ADC_VREF_TYPE       0x00 
+#define ADC_VREF_TYPE       0x40U
 // ---------------------------------------------------------------------------
 //  Define Constants.
 // ---------------------------------------------------------------------------
@@ -65,8 +63,8 @@
 //  Define Private variables.
 // ---------------------------------------------------------------------------
 //
-static volatile uint16_t adc_Data[LAST_ADC_INPUT - FIRST_ADC_INPUT + 1U];
-static volatile uint16_t adc_All_Data[LAST_ADC_INPUT - FIRST_ADC_INPUT + 1U][9];
+static volatile uint16_t adc_Data[MAX_ADC_CH];
+static volatile uint16_t adc_All_Data[MAX_ADC_CH][9];
 static volatile SYSTEM_FLAG  Adc_Flag ;
 // ---------------------------------------------------------------------------
 //  Define Varibales Macro.
@@ -79,8 +77,8 @@ static volatile SYSTEM_FLAG  Adc_Flag ;
 // Define private function definitions.
 // ---------------------------------------------------------------------------
 //
-static void cliADC(cli_args_t *args);
-static void adc_data_push(uint16_t * const pBuffer, uint16_t u16data);
+
+static void ad_data_avg(uint8_t u8AD_Index);
 // ---------------------------------------------------------------------------
 // Define Public function definitions.
 // ---------------------------------------------------------------------------
@@ -90,27 +88,56 @@ void ADCInit(void)
   // ADC initialization
   // ADC Clock frequency: 250.000 kHz
   // ADC Voltage Reference: AREF pin
-  ADMUX=FIRST_ADC_INPUT | (ADC_VREF_TYPE & 0xff);
-  ADCSRA=0xCE; 
-
-  cliAdd("ADC","Select ?",cliADC);        // EEPROM MFR DATA READF
-}
+  ADMUX  = FIRST_ADC_INPUT | (ADC_VREF_TYPE & 0xFFU);
+  #if (ADC_INT_ENABLE == 1)
+  ADCSRA = 0xCE; 
+  #else
+  ADCSRA = 0x85;  // ADC Clock frequency: 500.000 kHz
+  #endif
+} 
 /**
  * @brief Get ADC Lo data(12bits) from AVG LoData Buffer
  * 
  * @param index     : ADC Chanel
  * @return uint16_t : ADC Lo data
  */
-uint16_t ADCGetData(uint8_t index)
+uint16_t ADCGetData(uint8_t u8index)
 {
     uint16_t u16Result = 0x00U;
-
-    if(index < MAX_ADC_CH)
+    //
+    if(u8index < MAX_ADC_CH)
     {
-        u16Result = adc_All_Data[index][8] & 0x0FFFU;
+        u16Result = adc_All_Data[u8index][8] & 0x03FFU;
     }
-
+    //
     return (u16Result);
+}
+/**
+ * @brief   ADC Convert with index Channel and save buff & return
+ * 
+ * @param u8ad_index  ADC Channel
+ * @return uint16_t   ADC Result Data
+ */
+uint16_t read_adc(uint8_t u8ad_index)
+{
+  uint16_t u16Ret = 0U ;
+  
+  if(u8ad_index < MAX_ADC_CH)
+  {
+    ADMUX = u8ad_index | (ADC_VREF_TYPE & 0xFFU);
+    // Delay needed for the stabilization of the ADC input voltage
+    delay_us(10);
+    // Start the AD conversion
+    ADCSRA|=0x40;
+    // Wait for the AD conversion to complete
+    while ((ADCSRA & 0x10)==0);
+    ADCSRA|=0x10;
+
+    u16Ret = ADCW & 0x03FFU ;
+  }
+  //
+  adc_All_Data[u8ad_index][8] = u16Ret ;
+  return (u16Ret) ;
 }
 // ---------------------------------------------------------------------------
 // Define Private function prototype.
@@ -130,14 +157,10 @@ uint16_t ADCGetData(uint8_t index)
 interrupt [ADC_INT] void cbAdc_Isr(void)
 {
     static uint8_t input_Index = 0; 
-    uint16_t i_Ad_Data = 0 ;
-
+    static uint8_t u8Ptr = 0U ;
     // of the AD conversion result
     adc_Data[input_Index] = ADCW;  
-    i_Ad_Data = adc_Data[input_Index] ; //
-     
-    adc_data_push(&adc_All_Data[input_Index][0],i_Ad_Data);
-    //
+    u8Ptr = input_Index ;
     // Select next ADC input
     if (++input_Index > (LAST_ADC_INPUT-FIRST_ADC_INPUT)) 
     {
@@ -147,86 +170,41 @@ interrupt [ADC_INT] void cbAdc_Isr(void)
     //
     ADMUX=(FIRST_ADC_INPUT | ADC_VREF_TYPE) + input_Index;
     // Delay needed for the stabilization of the ADC input voltage
-    delay_us(10);
+    adc_All_Data[u8Ptr][0] = adc_All_Data[u8Ptr][1] ;
+    adc_All_Data[u8Ptr][1] = adc_All_Data[u8Ptr][2] ;
+    adc_All_Data[u8Ptr][2] = adc_All_Data[u8Ptr][3] ;
+    adc_All_Data[u8Ptr][3] = adc_All_Data[u8Ptr][4] ;
+    adc_All_Data[u8Ptr][4] = adc_All_Data[u8Ptr][5] ;
+    adc_All_Data[u8Ptr][5] = adc_All_Data[u8Ptr][6] ;
+    adc_All_Data[u8Ptr][6] = adc_All_Data[u8Ptr][7] ;
+    adc_All_Data[u8Ptr][7] = adc_Data[u8Ptr] ; 
+
+    ad_data_avg(u8Ptr);
+
+    //delay_us(2);
     // Start the AD conversion
     ADCSRA |= 0x40 ;
     //
 }
-//
-void adc_data_push(uint16_t * const pBuffer, uint16_t u16data)
+/**
+ * @brief   ADC Data Average
+ * 
+ * @param u8AD_Index ADC Channel
+ */
+static void ad_data_avg(uint8_t u8AD_Index)
 {
-    pBuffer[0] = pBuffer[1];
-    pBuffer[1] = pBuffer[2];
-    pBuffer[2] = pBuffer[3];
-    pBuffer[3] = pBuffer[4];
-    pBuffer[4] = pBuffer[5];
-    pBuffer[5] = pBuffer[6];
-    pBuffer[6] = pBuffer[7];
-    pBuffer[7] = u16data;
+    uint16_t u16Cal = 0U ;
+
+    u16Cal  = adc_All_Data[u8AD_Index][0] ;
+    u16Cal += adc_All_Data[u8AD_Index][1] ;
+    u16Cal += adc_All_Data[u8AD_Index][2] ;
+    u16Cal += adc_All_Data[u8AD_Index][3] ;
+    u16Cal += adc_All_Data[u8AD_Index][4] ;
+    u16Cal += adc_All_Data[u8AD_Index][5] ;
+    u16Cal += adc_All_Data[u8AD_Index][6] ;
+    u16Cal += adc_All_Data[u8AD_Index][8] ;
     //
-    pBuffer[8]  = pBuffer[0] ;
-    pBuffer[8] += pBuffer[1] ;
-    pBuffer[8] += pBuffer[2] ;
-    pBuffer[8] += pBuffer[3] ;
-    pBuffer[8] += pBuffer[4] ;
-    pBuffer[8] += pBuffer[5] ;
-    pBuffer[8] += pBuffer[6] ;
-    pBuffer[8] += pBuffer[7] ;
-    //
-    pBuffer[8] = pBuffer[8] >> 3U ;
+    adc_All_Data[u8AD_Index][8]  = (u16Cal >> 3U) & 0x03FF ;
 }
-void cliADC(cli_args_t *args)
-{
-    uint8_t  *u8Command  = NULL ;
-    uint8_t selectNo = 0x00U;
-    uint16_t *selectData = 0 ;
-
-    //ADCSRA &= ~(1<<ADIE) ;
-
-    if(args->argc == 1)
-    {
-        selectNo = (uint8_t)args->getData(0) ; // ASCII DECMAL & HEX Convert to binary
-
-        if(selectNo < MAX_ADC_CH)
-        {
-            selectData = &adc_All_Data[selectNo][0];
-            uartMsgByte2ASC(_DEF_UART1,"\r\nADC[",selectNo);delay_ms(10);
-            uartMsgWord5DASC(_DEF_UART1,"] = ",selectData[8]); delay_ms(30);
-        }
-    }
-    else if(args->argc == 2)
-    {
-        u8Command = args->getStr(0);
-        if((u8Command[0U] == 'T') || (u8Command[0U] == 't'))
-        {
-            selectNo = (uint8_t)args->getData(1) ; // ASCII DECMAL & HEX Convert to binary
-            if(selectNo < MAX_ADC_CH)
-            {
-                while(cliKeepLoop())
-                {
-                    //ADCSRA &= ~(1<<ADIE) ; // ADC Int. Disbale
-                    selectData = &adc_All_Data[selectNo][0];
-                    //ADCSRA |= (1<<ADIE) ;   // ADC Int. Enable
-                    uartMsgByte2ASC(_DEF_UART1,"\r\nADC[",selectNo);delay_ms(10);
-                    uartMsgWord5DASC(_DEF_UART1,"] = ",selectData[8]); delay_ms(150);
-                }
-            }
-            else
-            {
-            uartMsgWrite(_DEF_UART1,"hl5ugc>> ADC T [1~6] \r\n");  delay_ms(50);
-            }
-        }
-        else
-        {
-            uartMsgWrite(_DEF_UART1,"hl5ugc>> ADC T [1~6] \r\n");  delay_ms(50);
-        }
-    }
-    else
-    {
-      uartMsgWrite(_DEF_UART1,"hl5ugc>> ADC [1~6/T]  [1~6] \r\n");  delay_ms(50);
-      uartMsgWrite(_DEF_UART1,"Select Range Over!! \r\n");  delay_ms(50);
-    }
-    //ADCSRA |= (1<<ADIE) ;
-}
-
+ 
 #pragma used-  /* ADC.c End Of File !! Well Done */

@@ -1,10 +1,22 @@
 {
   "files.associations": {
-    "dataconvert.h": "c",
-    "qbuffer.h": "c",
-    "uart.h": "c",
-    "hw_def.h": "c",
-    "def.h": "c"
-  },
-  "editor.fontSize": 20
+    "ADC.C": "cpp",
+    "at24c256.h": "c",
+    "hw.h": "c",
+    "ADC copy.C": "cpp",
+    "IPL_SIO.C": "cpp",
+    "IPL_PULSE.C": "cpp",
+    "mcp4822.h": "c",
+    "IPL_SIO copy.C": "cpp",
+    "HMI_SIO.C": "cpp",
+    "HMI_SIO copy.C": "cpp",
+    "DWIN_LCD.C": "cpp",
+    "Temp_Tbl.C": "cpp",
+    "dwin_lcd.h": "c",
+    "apr_eeprom.h": "c",
+    "hmi_sio.h": "c",
+    "def.h": "c",
+    "ap_flag.h": "c",
+    "ipl_pulse.h": "c"
+  }
 }

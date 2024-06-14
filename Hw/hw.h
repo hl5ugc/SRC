@@ -6,16 +6,18 @@
 
 #include "hw_def.h"
 
-#include "cli.h"
-#include "uart.h"
-#include "timer0_int.h"
-#include "PortWrite.h"
-#include "PortRead.h"
-#include "at24c256.h"
-#include "Memory.h"
-#include "MCP4822.h"
+#include "Timer0_int.h"
 #include "ADC.h"
-#include "Temp.h"
+#include "at24c256.h"
+#include "apr_eeprom.h"
+#include "mcp4822.h"
+#include "ipl_sio.h"
+#include "ipl_pulse.h"
+#include "hmi_sio.h"
+#include "dwin_lcd.h"
+#include "Temp_Tbl.h"
+  
+
 void hwInit(void);
 
 

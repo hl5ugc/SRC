@@ -27,7 +27,7 @@
  * --------------------------------------------------------------------------
  * Author         Date       Comments on this revision
  * --------------------------------------------------------------------------
- * Hagseong Kang  Jul 14, 2023    First release of this file
+ * Hagseong Kang  2024-06-12    First release of this file
  * --------------------------------------------------------------------------
  * Additional Notes:
  * **************************************************************************
@@ -38,7 +38,7 @@
  * @return
  */
 
-#pragma used-
+#pragma used+
 /* Define Includes */
 #include "Temp.h"
 #include "timer0_int.h"

@@ -1,111 +1,186 @@
 
 #include "bsp.h"
-
+ 
 void bspInit(void)
 {
-
-#ifdef  _USE_ATMEGA128
-    // Input/Output Ports initialization
+    /// Input/Output Ports initialization
     // Port A initialization
-    // Function: Bit7=In Bit6=In Bit5=In Bit4=In Bit3=In Bit2=In Bit1=In Bit0=In 
-    DDRA=(0<<DDA7) | (0<<DDA6) | (0<<DDA5) | (0<<DDA4) | (0<<DDA3) | (0<<DDA2) | (0<<DDA1) | (0<<DDA0);
-    // State: Bit7=P Bit6=P Bit5=P Bit4=P Bit3=P Bit2=P Bit1=P Bit0=P 
-    PORTA=(1<<PORTA7) | (1<<PORTA6) | (1<<PORTA5) | (1<<PORTA4) | (1<<PORTA3) | (1<<PORTA2) | (1<<PORTA1) | (1<<PORTA0);
-
+    // Func7=In Func6=In Func5=In Func4=In Func3=In Func2=In Func1=In Func0=In
+    // State7=T State6=T State5=T State4=T State3=T State2=T State1=T State0=T
+    PORTA=0x00;
+    DDRA=0x00;
+    /*
     // Port B initialization
-    // Function: Bit7=In Bit6=Out Bit5=In Bit4=Out Bit3=In Bit2=Out Bit1=Out Bit0=Out 
-    DDRB=(0<<DDB7) | (1<<DDB6) | (0<<DDB5) | (1<<DDB4) | (0<<DDB3) | (1<<DDB2) | (1<<DDB1) | (1<<DDB0);
-    // State: Bit7=T Bit6=1 Bit5=T Bit4=1 Bit3=T Bit2=1 Bit1=1 Bit0=1 
-    PORTB=(0<<PORTB7) | (1<<PORTB6) | (0<<PORTB5) | (1<<PORTB4) | (0<<PORTB3) | (1<<PORTB2) | (1<<PORTB1) | (1<<PORTB0);
-
+    // Func7=Out Func6=Out Func5=Out Func4=Out Func3=Out Func2=Out Func1=Out Func0=Out
+    // State7=0 State6=0 State5=0 State4=0 State3=0 State2=0 State1=0 State0=0
+    PORTB=0x00;
+    DDRB=0xFF;
+    */
+    // Port B initialization
+    // Func7=In Func6=Out Func5=In Func4=Out Func3=In Func2=Out Func1=Out Func0=Out 
+    // State7=T State6=1 State5=T State4=1 State3=T State2=1 State1=1 State0=1 
+    PORTB=0x57;
+    DDRB=0x57;
     // Port C initialization
-    // Function: Bit7=Out Bit6=Out Bit5=Out Bit4=Out Bit3=Out Bit2=Out Bit1=In Bit0=In 
-    DDRC=(1<<DDC7) | (1<<DDC6) | (1<<DDC5) | (1<<DDC4) | (1<<DDC3) | (1<<DDC2) | (0<<DDC1) | (0<<DDC0);
-    // State: Bit7=0 Bit6=0 Bit5=0 Bit4=0 Bit3=0 Bit2=0 Bit1=P Bit0=P 
-    PORTC=(0<<PORTC7) | (0<<PORTC6) | (0<<PORTC5) | (0<<PORTC4) | (0<<PORTC3) | (0<<PORTC2) | (1<<PORTC1) | (1<<PORTC0);
-
+    // Func7=Out Func6=Out Func5=Out Func4=Out Func3=Out Func2=Out Func1=In Func0=In 
+    // State7=1 State6=1 State5=0 State4=0 State3=1 State2=1 State1=T State0=T 
+    PORTC=0xCC;
+    DDRC=0xFC;
+    //
+    //
     // Port D initialization
-    // Function: Bit7=In Bit6=In Bit5=Out Bit4=In Bit3=Out Bit2=In Bit1=Out Bit0=Out 
-    DDRD=(0<<DDD7) | (0<<DDD6) | (1<<DDD5) | (0<<DDD4) | (1<<DDD3) | (0<<DDD2) | (1<<DDD1) | (1<<DDD0);
-    // State: Bit7=T Bit6=T Bit5=0 Bit4=T Bit3=1 Bit2=T Bit1=1 Bit0=1 
-    PORTD=(0<<PORTD7) | (0<<PORTD6) | (0<<PORTD5) | (0<<PORTD4) | (1<<PORTD3) | (0<<PORTD2) | (1<<PORTD1) | (1<<PORTD0);
+    // Func7=Out Func6=Out Func5=Out Func4=In Func3=Out Func2=In Func1=In Func0=In
+    // State7=1 State6=1 State5=1 State4=T State3=0 State2=T State1=T State0=T
+    PORTD=0xE0;
+    DDRD=0xE8;
 
     // Port E initialization
-    // Function: Bit7=In Bit6=In Bit5=Out Bit4=Out Bit3=In Bit2=In Bit1=Out Bit0=In 
-    DDRE=(0<<DDE7) | (0<<DDE6) | (1<<DDE5) | (1<<DDE4) | (0<<DDE3) | (0<<DDE2) | (1<<DDE1) | (0<<DDE0);
-    // State: Bit7=T Bit6=T Bit5=0 Bit4=0 Bit3=T Bit2=T Bit1=1 Bit0=T 
-    PORTE=(0<<PORTE7) | (0<<PORTE6) | (0<<PORTE5) | (0<<PORTE4) | (0<<PORTE3) | (0<<PORTE2) | (1<<PORTE1) | (0<<PORTE0);
+    // Func7=In Func6=In Func5=Out Func4=Out Func3=Out Func2=In Func1=Out Func0=In 
+    // State7=T State6=T State5=0 State4=0 State3=0 State2=T State1=0 State0=T 
+    PORTE=0x00;
+    DDRE=0x3A;
 
     // Port F initialization
-    // Function: Bit7=In Bit6=In Bit5=In Bit4=In Bit3=In Bit2=In Bit1=In Bit0=In 
-    DDRF=(0<<DDF7) | (0<<DDF6) | (0<<DDF5) | (0<<DDF4) | (0<<DDF3) | (0<<DDF2) | (0<<DDF1) | (0<<DDF0);
-    // State: Bit7=T Bit6=T Bit5=T Bit4=T Bit3=T Bit2=T Bit1=T Bit0=T 
-    PORTF=(0<<PORTF7) | (0<<PORTF6) | (0<<PORTF5) | (0<<PORTF4) | (0<<PORTF3) | (0<<PORTF2) | (0<<PORTF1) | (0<<PORTF0);
+    // Func7=In Func6=In Func5=In Func4=In Func3=In Func2=In Func1=In Func0=In
+    // State7=T State6=T State5=T State4=T State3=T State2=T State1=T State0=T
+    PORTF=0x00;
+    DDRF=0x00;
 
     // Port G initialization
-    // Function: Bit4=In Bit3=In Bit2=In Bit1=In Bit0=In 
-    DDRG=(0<<DDG4) | (0<<DDG3) | (0<<DDG2) | (0<<DDG1) | (0<<DDG0);
-    // State: Bit4=T Bit3=T Bit2=T Bit1=T Bit0=T 
-    PORTG=(0<<PORTG4) | (0<<PORTG3) | (0<<PORTG2) | (0<<PORTG1) | (0<<PORTG0);
-
+    // Func4=In Func3=In Func2=In Func1=In Func0=In
+    // State4=T State3=T State2=T State1=T State0=T
+    PORTG=0x00;
+    DDRG=0x00;
     // Timer/Counter 0 initialization
     // Clock source: System Clock
     // Clock value: 250.000 kHz
-    // Mode: CTC top=OCR0
+    // Mode: Normal top=FFh
     // OC0 output: Disconnected
-    // Timer Period: 1 ms
-    ASSR=0<<AS0;
-    TCCR0=(0<<WGM00) | (0<<COM01) | (0<<COM00) | (1<<WGM01) | (1<<CS02) | (0<<CS01) | (0<<CS00);
+    ASSR=0x00;
+    TCCR0=0x0C;
     TCNT0=0x00;
-    OCR0=0xF9;
+    OCR0=0xfa;
+    //
+    // Timer/Counter 1 initialization
+    // Clock source: System Clock
+    // Clock value: 250.000 kHz
+    // Mode: CTC top=OCR1A
+    // OC1A output: Discon.
+    // OC1B output: Discon.
+    // OC1C output: Discon.
+    // Noise Canceler: Off
+    // Input Capture on Falling Edge
+    // Timer1 Overflow Interrupt: Off
+    // Input Capture Interrupt: Off
+    // Compare A Match Interrupt: On
+    // Compare B Match Interrupt: Off
+    // Compare C Match Interrupt: Off
+    TCCR1A=0x00;
+    TCCR1B=0x0B;
+    TCNT1H=0x00;
+    TCNT1L=0x00;
+    ICR1H=0x00;
+    ICR1L=0x00;
+    OCR1AH=0x12;
+    OCR1AL=0x34;
+    OCR1BH=0x00;
+    OCR1BL=0x00;
+    OCR1CH=0x00;
+    OCR1CL=0x00;
+    //
+    // Timer/Counter 2 initialization
+    // Clock source: System Clock
+    // Clock value: 250.000 kHz
+    // Mode: CTC top=OCR2
+    // OC2 output: Disconnected
+    TCCR2=0x0B;
+    TCNT2=0x00;
+    OCR2=0xFA;
 
+    // Timer/Counter 3 initialization
+    // Clock source: System Clock
+    // Clock value: 62.500 kHz
+    // Mode: CTC top=OCR3A
+    // OC3A output: Discon.
+    // OC3B output: Discon.
+    // OC3C output: Discon.
+    // Noise Canceler: Off
+    // Input Capture on Falling Edge
+    // Timer3 Overflow Interrupt: Off
+    // Input Capture Interrupt: Off
+    // Compare A Match Interrupt: On
+    // Compare B Match Interrupt: Off
+    // Compare C Match Interrupt: Off
+    TCCR3A=0x00;
+    TCCR3B=0x00;
+    TCNT3H=0x00;
+    TCNT3L=0x00;
+    ICR3H=0x00;
+    ICR3L=0x00;
+    OCR3AH=0x00;
+    OCR3AL=0x00;
+    OCR3BH=0x00;
+    OCR3BL=0x00;
+    OCR3CH=0x00;
+    OCR3CL=0x00;
+
+    // External Interrupt(s) initialization
+    // INT0: Off
+    // INT1: Off
+    // INT2: Off
+    // INT3: Off
+    // INT4: Off
+    // INT5: Off
+    // INT6: Off
+    // INT7: Off
+    EICRA=0x00;
+    EICRB=0x00;
+    EIMSK=0x00;
+
+    // Timer(s)/Counter(s) Interrupt(s) initialization
+    // TIMSK=0x80; // TIMER 2 INT
+    TIMSK=0x82;
+    // ETIMSK=0x10 ;  // TIMER 3 match A INT
+    ETIMSK=0x00;
+    //
     // USART0 initialization
     // Communication Parameters: 8 Data, 1 Stop, No Parity
     // USART0 Receiver: On
     // USART0 Transmitter: On
     // USART0 Mode: Asynchronous
-    // USART0 Baud Rate: 9600
-    UCSR0A=(0<<RXC0) | (0<<TXC0) | (0<<UDRE0) | (0<<FE0) | (0<<DOR0) | (0<<UPE0) | (0<<U2X0) | (0<<MPCM0);
-    UCSR0B=(1<<RXCIE0) | (1<<TXCIE0) | (0<<UDRIE0) | (1<<RXEN0) | (1<<TXEN0) | (0<<UCSZ02) | (0<<RXB80) | (0<<TXB80);
-    UCSR0C=(0<<UMSEL0) | (0<<UPM01) | (0<<UPM00) | (0<<USBS0) | (1<<UCSZ01) | (1<<UCSZ00) | (0<<UCPOL0);
+    // USART0 Baud Rate: 19200
+    UCSR0A=0x00;
+    UCSR0B=0xD8;
+    UCSR0C=0x06;
     UBRR0H=0x00;
-    UBRR0L=0x19;
+    UBRR0L=0x33;
 
     // USART1 initialization
     // Communication Parameters: 8 Data, 1 Stop, No Parity
     // USART1 Receiver: On
     // USART1 Transmitter: On
     // USART1 Mode: Asynchronous
-    // USART1 Baud Rate: 9600
-    UCSR1A=(0<<RXC1) | (0<<TXC1) | (0<<UDRE1) | (0<<FE1) | (0<<DOR1) | (0<<UPE1) | (0<<U2X1) | (0<<MPCM1);
-    UCSR1B=(1<<RXCIE1) | (1<<TXCIE1) | (0<<UDRIE1) | (1<<RXEN1) | (1<<TXEN1) | (0<<UCSZ12) | (0<<RXB81) | (0<<TXB81);
-    UCSR1C=(0<<UMSEL1) | (0<<UPM11) | (0<<UPM10) | (0<<USBS1) | (1<<UCSZ11) | (1<<UCSZ10) | (0<<UCPOL1);
+    // USART1 Baud Rate: 19200
+    UCSR1A=0x00;
+    UCSR1B=0xD8;
+    UCSR1C=0x06;
     UBRR1H=0x00;
-    UBRR1L=0x19;
-
-
-  // Timer(s)/Counter(s) Interrupt(s) initialization
-  // Timer(s)/Counter(s) Interrupt(s) initialization
-  TIMSK=(0<<OCIE2) | (0<<TOIE2) | (0<<TICIE1) | (0<<OCIE1A) | (0<<OCIE1B) | (0<<TOIE1) | (0<<OCIE0) | (0<<TOIE0);
-  ETIMSK=(0<<TICIE3) | (0<<OCIE3A) | (0<<OCIE3B) | (0<<TOIE3) | (0<<OCIE3C) | (0<<OCIE1C);
-  //TIMSK=0x02;
-  //ETIMSK=0x00;
-
-  // Analog Comparator initialization
-  // Analog Comparator: Off
-  // Analog Comparator Input Capture by Timer/Counter 1: Off
-  ACSR=0x80;
-  SFIOR=0x00;
-
-// SPI initialization
-// SPI Type: Master
-// SPI Clock Rate: 250.000 kHz
-// SPI Clock Phase: Cycle Half
-// SPI Clock Polarity: Low
-// SPI Data Order: MSB First
-SPCR=0x52;
-SPSR=0x00;
-#endif
-
+    UBRR1L=0x33;
+    //
+    // Analog Comparator initialization
+    // Analog Comparator: Off
+    // Analog Comparator Input Capture by Timer/Counter 1: Off
+    ACSR=0x80;
+    SFIOR=0x00;
+    // SPI initialization
+    // SPI Type: Master
+    // SPI Clock Rate: 4000.000 kHz
+    // SPI Clock Phase: Cycle Half
+    // SPI Clock Polarity: Low
+    // SPI Data Order: MSB First
+    //SPCR=0x50;
+    //SPSR=0x00;
+ 
+ 
 }
  

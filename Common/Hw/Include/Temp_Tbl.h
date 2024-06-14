@@ -5,9 +5,9 @@
  * [ E-MAIL    ]  hl5ugc@nate.com (82)10- 3841-9706
  * [ C  P  U   ]
  * [ Compller  ]  
- * [ Filename  ]  MEMORY.h
+ * [ Filename  ]  Temp_Tbl.h
  * [ Version   ]  1.0
- * [ Created   ]  2023[11:57:54 AM ]
+ * [ Created   ]  2024-06-10
  * --------------------------------------------------------------------------
  * Revision History :
  * ------------------------------------------------------------------
@@ -27,7 +27,7 @@
  * --------------------------------------------------------------------------
  * Author         Date       Comments on this revision
  * --------------------------------------------------------------------------
- * Hagseong Kang  Jul 14, 2023    First release of this file
+ * Hagseong Kang  2024-06-10  First release of this file
  * --------------------------------------------------------------------------
  * Additional Notes:
  * **************************************************************************
@@ -40,29 +40,46 @@
 
  
 /* Mutiple includes protection */
-#ifndef COMMON_HW_INCLUDE_MEMORY_H_
-#define COMMON_HW_INCLUDE_MEMORY_H_
+#ifndef COMMON_HW_INCLUDE_TEMP_TBL_H_
+#define COMMON_HW_INCLUDE_TEMP_TBL_H_
 /* Includes */
 #include "hw_def.h"
-#ifdef _USE_HW_MEMORY
  
  
+// Temp Sensor  DF-103FU-25S // 10K + SENSOR.... REF 4.096 
 // ---------------------------------------------------------------------------
 // Define Global define
 // --------------------------------------------------------------------------- 
 // 
-
+#define COOL_SEC_TIME_MAX   6000    // 2Min --> 12,000 X 10 = 120,000
+#define DT_TEMP_MAX         310     // 30.0 C
+#define DT_TEMP_MIN         170     // 10.0 C
 // ---------------------------------------------------------------------------
 // Define typedef
 // --------------------------------------------------------------------------- 
-// 
+//
+//
+// extern volatile SYSTEM_FLAG temp_flag ;
+// ---------------------------------------------------------------------------
+//  Flag Macro Define .
+// ---------------------------------------------------------------------------
+/*
+#define st_temp_update_flag_on                  temp_flag.bits.bit0 = 1
+#define st_temp_update_flag_off                 temp_flag.bits.bit0 = 0
+#define Is_st_temp_update_flag                  temp_flag.bits.bit0 == 1
+#define Is_Not_st_temp_update_flag              temp_flag.bits.bit0 == 0
+//
+#define dt_temp_update_flag_on                  temp_flag.bits.bit1 = 1
+#define dt_temp_update_flag_off                 temp_flag.bits.bit1 = 0
+#define Is_dt_temp_update_flag                  temp_flag.bits.bit1 == 1
+#define Is_Not_dt_temp_update_flag              temp_flag.bits.bit1 == 0
+*/
 // ---------------------------------------------------------------------------
 // Define  Global Function prototypes.
 // --------------------------------------------------------------------------- 
 //
-void MemoryInit(void);
- 
+signed int temp_cal(uint16_t u16Data);
 
-#endif 
-#endif 
-/* default.h End Of File !! Well Done */
+
+#endif /* TEMP_TBL.h End Of File !! Well Done */
+ 

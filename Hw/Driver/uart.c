@@ -134,8 +134,8 @@ const uint8_t bps_Tbl[4] = {0x67, 0x33, 0x19, 0x19};
 //
 #ifdef _USE_HW_TIMER0
 
-#define _DEF_UART_RX_CB_CH HW_TIMER0_CB1
-#define _DEF_UART_TX_CB_CH HW_TIMER0_CB2
+#define _DEF_UART_RX_CB_CH  HW_UART_rX_TIMER0_CB
+#define _DEF_UART_TX_CB_CH  HW_UART_TX_TIMER0_CB
 void cbUartRX0(void);
 void cbUartTX0(void);
 #endif

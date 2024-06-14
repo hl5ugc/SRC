@@ -99,6 +99,7 @@ bool timer0Init(void)
   {
   	timer0_CB_tbl[i].callBack = NULL ;
   }
+  
   sysTickCounter = 0x00 ;
   return bRet ;
 }
@@ -111,12 +112,12 @@ uint16_t  millis(void)
 {
   return sysTickCounter ;  
 }
-bool timer0Enable(void)
+void timer0Enable(void)
 {
   // Timer(s)/Counter(s) Interrupt(s) initialization
   TIMSK |= (1<<OCIE0) ;
 }
-bool timer0Disable(void)
+void timer0Disable(void)
 {
   // Timer(s)/Counter(s) Interrupt(s) initialization
   TIMSK &= ~(1<<OCIE0) ;
@@ -144,26 +145,20 @@ void canSetTimer0Callback(uint8_t ch, void (*callBack)(void))
  * 
  * @return interrupt[TIM0_COMP] 
  */
-#ifndef  _USE_ATMEGA8
+ 
 interrupt [TIM0_COMP] void timer0CompIsr(void)
 {
-  uint8_t u8i = 0 ;
-  #ifdef  _USE_ATMEGA8
-  // Reinitialize Timer 0 value
-  TCNT0=0x06;
-  #endif
+  uint8_t u8i = 0U ;
   // Place your code here
   sysTickCounter++ ;
 
-  for(u8i = 0; u8i < TIMER0_MAX_CB; u8i++)
+  for(u8i=0U; u8i<TIMER0_MAX_CB; u8i++)
   {
     if(timer0_CB_tbl[u8i].callBack != NULL) 
     {
         (*timer0_CB_tbl[u8i].callBack)() ;
     }
   }
-}
-#endif
 
- 
+}
 #endif

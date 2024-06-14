@@ -7,7 +7,7 @@
  * [ Compller  ]  
  * [ Filename  ]  MCP4822.h
  * [ Version   ]  1.0
- * [ Created   ]  2023[11:57:54 AM ]
+ * [ Created   ]  2024-06-12
  * --------------------------------------------------------------------------
  * Revision History :
  * ------------------------------------------------------------------
@@ -27,7 +27,7 @@
  * --------------------------------------------------------------------------
  * Author         Date       Comments on this revision
  * --------------------------------------------------------------------------
- * Hagseong Kang  Jul 14, 2023    First release of this file
+ * Hagseong Kang  2024-06-12    First release of this file
  * --------------------------------------------------------------------------
  * Additional Notes:
  * **************************************************************************
@@ -50,9 +50,13 @@
 // Define Global define
 // --------------------------------------------------------------------------- 
 // 
-#define MAX_DA_DATA       HW_MCP4822_MAX_DA_DATA
-#define DA_DATA_MIN       HW_MCP4822_DA_DATA_MIN  
-#define DA_DATA_MAX       HW_MCP4822_DA_DATA_MAX 
+#define MAX_DA_DATA           HW_MCP4822_MAX_DA_DATA
+#define DA_DATA_MIN           HW_MCP4822_DA_DATA_MIN  
+#define DA_DATA_MAX           HW_MCP4822_DA_DATA_MAX  
+
+#define da_sv_data            MCP4822_Sv_Data 
+#define Da_data_out_main      MCP4822_Data_Out_Main
+#define Da_sv_data_out_clear  MCP4822_Sv_Data_Clear_Out
 // ---------------------------------------------------------------------------
 // Define typedef
 // --------------------------------------------------------------------------- 
@@ -70,13 +74,13 @@ typedef enum
 void MCP4822Init(void);
 void MCP4822_Data_Out_Main(MCP4822_CH channel, uint16_t wDa_Data);
 // 
-void MCP4822_Level_Sv_data_Out(uint16_t da_data);
-void MCP4822_Level_Sv_data_Clear_Out(void);
+void MCP4822_Sv_data_Out(uint16_t u16da_data);
+void MCP4822_Sv_Data_Clear_Out(void);
 //
 uint16_t Get_MCP4822_Data(void);
 //
-//void MCP4822_Sw_Transmit(MCP4822_CH channel, uint8_t bGain, uint16_t wDa_Data); 
+// ----------------------------------------------------------------
 //
 #endif 
 #endif 
-/* default.h End Of File !! Well Done */
+/* MCP4822.h End Of File !! Well Done */

@@ -5,15 +5,10 @@
 void hwInit(void)
 {
   bspInit();
-  cliInit();
   timer0Init();
-  uartInit();
-  At24c256Init();
-  MemoryInit();
-  MCP4822Init();
-  PortWriteInit();
-  PortReadInit();
   ADCInit();
-
-  TempInit();
+  At24c256Init();
+  IplSioInit();
+  HMI_SioInit();
+  dwin_lcd_init();
 }

@@ -60,9 +60,9 @@
 // ---------------------------------------------------------------------------
 //
 bool  timer0Init(void);
-bool  timer0Enable(void);
-bool  timer0Disable(void);
-//
+void  timer0Enable(void);
+void  timer0Disable(void);
+// 
 uint16_t  millis(void);
  
 // -----------------------------------------------------------------------------

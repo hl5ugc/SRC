@@ -97,6 +97,8 @@ static uint8_t HexLowToUpper(const uint8_t LowerAlpabet);
 //  Define Public function definitions.
 // ---------------------------------------------------------------------------
 //
+ 
+
 /*
  * @brief Byte data convert to 2digit ASCII Decimal
  *

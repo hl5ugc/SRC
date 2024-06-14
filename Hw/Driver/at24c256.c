@@ -11,16 +11,18 @@
  * --------------------------------------------------------------------------
  * Revision History :
  * ------------------------------------------------------------------
- * 
- *  *.본소스 코드를 이용하는 것은 본 조항을 사용자가 암묵적으로
- *    동의 한것으로 간주 합니다.
- *  *.본 소스코드는 개인학습 및 연구 개발용으로 자유롭게 사용가능
- *    합니다.
- *  *.본소스를 사용하여 2차 저작을 하거나 재배포 할 시에는 반드시
- *    SAMJIN ELECTRONICS의 회사명을 반드시 명시하여야 합니다.
- *  *.본 소스코드의 판매 및 영리 활동을 금지합니다 .
- *  *.본 조항 및 원저자 표시의 수정 및 삭제를 금지합니다.
  *
+ *
+ *  *.The use of this source code shall be deemed to have been 
+ *    tacitly agreed by the user.
+ *  *.This source code is freely available for personal learning 
+ *    and research and development.
+ *  *.In the case of secondary authoring or redistribution using this source, 
+ *    it is essential The company name of SAMJIN ELECTRONICS must be specified.
+ *  *.Do not sell or for-profit this source code.
+ *	*.This clause and the original author mark are prohibited from being 
+ *	  modified or deleted. 
+ * 
  *------------------------------------------------------------------
  * --------------------------------------------------------------------------
  * Author         Date       Comments on this revision
@@ -36,7 +38,7 @@
 * @return
 */
 
-#pragma used-
+#pragma used+
 /* Define Includes */
  
 #include "At24c256.h"
@@ -143,16 +145,22 @@ void At24c_Read_Byte_block(uint8_t * const pu8Buff, uint16_t u16Address, uint8_t
  * @param u16Address Read EEPROM Address
  * @return uint8_t   Readed 2 bytes Data
  */
+// working
 uint16_t At24c_Read_2Bytes(uint16_t u16Address) 
 {     
   uint16_t bRet = 0x00U;
+  uint8_t   bData = 0x00U;
   twi_Write_Address(u16Address);
   //
   twi_Start();
   twi_Write(AT24C_DEVICE | 0x01U);    // twi device read command
-  bRet = twi_Ack_Read();
-  bRet =(bRet << 8U) & 0xFF00U ;
-  bRet = bRet | twi_Read();
+  // bRet = twi_Ack_Read();
+  // bRet =(bRet << 8U) & 0xFF00U ;
+  // bRet = bRet | twi_Read();
+  bData = twi_Ack_Read();
+  bRet =((uint16_t)bData << 8U) & 0xFF00U ;
+  bData = twi_Read();
+  bRet = bRet + bData;
   twi_Stop();
   //
   return (bRet) ;  
@@ -224,6 +232,30 @@ void At24c_Write_Byte_block(const uint8_t *pu8Buff , uint16_t u16Address, uint8_
       u8Cunter-- ;
   }
   while(u8Cunter > 0) ; 
+  //
+  twi_Stop();  
+  delay_ms(15) ;    // DELAY 11mSEC 
+}
+/**
+ * @brief Multi Write 2bytes  Block  in u16Address 
+ * 
+ * @param pu16Buff   Flash  Multi Write 2bytes
+ * @param u16Address  Write address
+ * @param u8Cunter    The quantity to be write
+ */
+void At24c_FWrite_block(flash uint16_t *pu16Buff , uint16_t u16Address, uint8_t u8Counter) 
+{
+  uint8_t index = 0x00U;
+  twi_Write_Address(u16Address);       // write low address 
+  //
+  do
+  {
+      twi_Write((pu16Buff[index])>>8U);  
+      twi_Write(pu16Buff[index])  ; 
+      index++ ;
+      u8Counter-- ;
+  }
+  while(u8Counter > 0) ; 
   //
   twi_Stop();  
   delay_ms(15) ;    // DELAY 11mSEC 
@@ -323,7 +355,7 @@ void twi_Write_Address(uint16_t address)
 {
   twi_Start();
   twi_Write(AT24C_DEVICE);                      // write device address
-  twi_Write((address >> 8) & AT24CXX_ADD_MASK); // write high address
+  twi_Write((address >> 8U) & AT24CXX_ADD_MASK); // write high address
   twi_Write(address);
 }
 // ---------------------------------------------------------------------------
